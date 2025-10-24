@@ -8,6 +8,9 @@ import Icon from '@/components/ui/icon';
 export default function Index() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +24,31 @@ export default function Index() {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/882cf3b5-bcb8-495e-8f89-9213d707d882', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', phone: '', email: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -231,28 +259,64 @@ export default function Index() {
               Свяжитесь со мной для консультации и расчета стоимости
             </p>
             <Card className="p-8 md:p-12">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2">Ваше имя</label>
-                  <Input placeholder="Иван Иванов" className="w-full" />
+                  <Input 
+                    placeholder="Иван Иванов" 
+                    className="w-full"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Телефон</label>
-                  <Input placeholder="+7 (___) ___-__-__" className="w-full" />
+                  <Input 
+                    placeholder="+7 (___) ___-__-__" 
+                    className="w-full"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Email</label>
-                  <Input type="email" placeholder="email@example.com" className="w-full" />
+                  <Input 
+                    type="email" 
+                    placeholder="email@example.com" 
+                    className="w-full"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Опишите ваш проект</label>
                   <Textarea
                     placeholder="Расскажите о том, какие работы вас интересуют..."
                     className="w-full min-h-32"
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    required
                   />
                 </div>
-                <Button className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg">
-                  Отправить заявку
+                {submitStatus === 'success' && (
+                  <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded">
+                    ✓ Заявка успешно отправлена! Свяжемся с вами в ближайшее время.
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
+                    ✗ Ошибка отправки. Попробуйте позже или свяжитесь по телефону.
+                  </div>
+                )}
+                <Button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
                 </Button>
               </form>
               <div className="mt-12 pt-8 border-t space-y-4">

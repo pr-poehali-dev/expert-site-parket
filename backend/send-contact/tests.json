@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "Valid contact form submission",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Иван Петров",
+        "phone": "+7 (900) 123-45-67",
+        "email": "ivan@example.com",
+        "message": "Хочу заказать укладку паркета в квартире 80 кв.м."
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle OPTIONS for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
