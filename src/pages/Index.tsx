@@ -153,7 +153,7 @@ export default function Index() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               'https://cdn.poehali.dev/projects/e98e68e4-5781-4e29-97fa-eb006529b073/files/8acccd57-17f9-4702-8e89-2f6bc0e23ffb.jpg',
-              'https://cdn.poehali.dev/projects/e98e68e4-5781-4e29-97fa-eb006529b073/files/8366aa80-2bb3-46d6-8020-3053098e88ec.jpg',
+              'https://cdn.poehali.dev/projects/e98e68e4-5781-4e29-97fa-eb006529b073/files/9f6aa220-58e8-489d-a178-8b94a4b03f5f.jpg',
               'https://cdn.poehali.dev/projects/e98e68e4-5781-4e29-97fa-eb006529b073/files/79ba5c98-e92b-4178-b616-48b506eec831.jpg',
             ].map((img, index) => (
               <div
